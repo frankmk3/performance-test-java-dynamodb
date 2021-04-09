@@ -1,0 +1,20 @@
+version: '3'
+services:
+  dynamodb:
+    image: amazon/dynamodb-local
+    volumes:
+     - ./dockercompose/dynamodb/data:/data/db
+    ports:
+      - "8000:8000"
+  performance-test-dynamodb-server:
+    depends_on: [ "dynamodb"]
+    build: dockercompose/performance-test-java-dynamodb
+    environment:
+      AWS_ACCESSKEY: "fakemykeyid"
+      AWS_SECRETKEY: "fakesecretaccesskey"
+      AWS_REGION: "us-west-2"
+      DYNAMODB_ENDPOINT: "http://dynamodb:8000/"
+    ports:
+     - "1401:1401"
+    volumes:
+     - ./dockercompose/performance-test-java-dynamodb/app.jar:/home/app.jar
